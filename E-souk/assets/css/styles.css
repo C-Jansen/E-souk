@@ -34,6 +34,45 @@
   color: var(--color-accent) !important;
 }
 
+ /* User Dropdown Styling */
+ .nav-item.dropdown .nav-link {
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.nav-item.dropdown .nav-link:hover {
+  color: #0d6efd; /* Bootstrap primary color */
+}
+
+.nav-item.dropdown .dropdown-menu {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: none;
+  padding: 8px 0;
+  min-width: 180px;
+  margin-top: 10px;
+}
+
+.nav-item.dropdown .dropdown-item {
+  padding: 8px 16px;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.nav-item.dropdown .dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #0d6efd;
+}
+
+.nav-item.dropdown .dropdown-item:active {
+  background-color: #e9ecef;
+  color: #0d6efd;
+}
+
+/* User icon styling */
+.nav-item.dropdown .fa-user {
+  font-size: 18px;
+}
 /* =================== Dropdown System =================== */
 .dropdown-menu {
   border: none;
@@ -78,14 +117,27 @@
 .hero {
   padding: 80px 0;
   background-color: var(--color-white);
+  background-image: url('../images/Hero.jpg');
 }
+
 /* =================== Image Section =================== */
+
 .image {
   padding: 20px 0;
+}
+/* section background color*/
+.image.mb-2 {
+  background-color: var(--color-accent);
+  padding: 40px 0; /* Adjusted padding */
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0; /* Remove bottom margin */
+  z-index: 1;
 }
 
 .block-image.sc-2 {
   width: 90%;
+  height: auto;
   max-width: 800px;
   margin: 0 auto;
   border-radius: 20px;
@@ -99,7 +151,6 @@
   display: block;
   transition: transform 0.3s ease;
 }
-
 
 
 /* =================== Card Component =================== */
@@ -174,11 +225,7 @@ footer a:hover {
   box-shadow: 0 5px 15px rgba(76, 90, 230, 0.3);
 }
 
-.image.mb-2 {
-  position: relative;
-  margin-top: -80px; /* Adjust based on your needs */
-  z-index: 1;
-}
+
 
 @media (max-width: 850px) {
   .wave-container::before {
@@ -233,3 +280,34 @@ footer a:hover {
 footer a:hover i {
   animation: pulse 0.5s ease infinite alternate;
 }
+
+/* Shape Divider Styles */
+.shape-divider, .shape-divider-bottom {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  z-index: 2;
+}
+
+.shape-divider {
+  margin-bottom: -2px;
+}
+
+.shape-divider-bottom {
+  margin-top: -2px;
+}
+
+.shape-divider img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.shape-divider-bottom img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transform: rotate(180deg);
+}
+
