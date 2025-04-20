@@ -60,16 +60,63 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  // Initialize all handlers
-  handleDropdowns();
-  handleBackToTop();
-
-  // Close dropdowns when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.dropdown-submenu') && window.innerWidth <= 992) {
-      document.querySelectorAll('.dropdown-submenu .dropdown-menu').forEach(menu => {
-        menu.classList.remove('show');
-      });
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get carousel elements
+    const carousel = document.querySelector('.product-carousel');
+    const prevArrow = document.querySelector('.prev-arrow');
+    const nextArrow = document.querySelector('.next-arrow');
+    
+    // Exit if elements don't exist
+    if (!carousel || !prevArrow || !nextArrow) {
+        console.error("Carousel elements not found!");
+        return;
     }
-  });
+    
+    // Set scroll amount
+    const scrollAmount = 300; // Adjust based on card width
+    let position = 0;
+    
+    // Get max scroll position
+    function getMaxScroll() {
+        return carousel.scrollWidth - carousel.parentElement.clientWidth;
+    }
+    
+    // Update carousel position and button states
+    function updateCarousel() {
+        carousel.style.transform = `translateX(-${position}px)`;
+        
+        // Update button states
+        prevArrow.disabled = position <= 0;
+        prevArrow.style.opacity = position <= 0 ? '0.5' : '1';
+        
+        nextArrow.disabled = position >= getMaxScroll();
+        nextArrow.style.opacity = position >= getMaxScroll() ? '0.5' : '1';
+    }
+    
+    // Initialize
+    updateCarousel();
+    
+    // Previous button click handler
+    prevArrow.addEventListener('click', function() {
+        position = Math.max(0, position - scrollAmount);
+        updateCarousel();
+    });
+    
+    // Next button click handler
+    nextArrow.addEventListener('click', function() {
+        position = Math.min(getMaxScroll(), position + scrollAmount);
+        updateCarousel();
+    });
+    
+    // Update on window resize
+    window.addEventListener('resize', function() {
+        // Ensure we don't scroll beyond the end after resize
+        const maxScroll = getMaxScroll();
+        if (position > maxScroll) {
+            position = maxScroll;
+        }
+        updateCarousel();
+    });
+});
+
 });
