@@ -7,8 +7,8 @@ class Database {
         try {
             $this->connection = new PDO(
                 'mysql:host=localhost;dbname=bd-esouk-2;charset=utf8mb4',
-                'root',  
-                '',      
+                'aziz',  
+                'jradz123',      
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

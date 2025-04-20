@@ -114,27 +114,16 @@ $filtered_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <h6>Prix</h6>
                         <div class="d-flex justify-content-between">
                             <span>0 DT</span>
-                            <span>500 DT</span>
+                            <span id="priceValue"><?php echo $priceMax; ?> DT</span>
                         </div>
-                        <input type="range" class="form-range" min="0" max="500" step="10" id="priceRange" />
-                    </div>
-
-                    <!-- Size Filter -->
-                    <div class="mb-4">
-                        <h6>Taille</h6>
-                        <div class="btn-group btn-group-sm" role="group">
-                            <input type="radio" class="btn-check" name="size" id="size-all" autocomplete="off" checked />
-                            <label class="btn btn-outline-secondary" for="size-all">Tous</label>
-
-                            <input type="radio" class="btn-check" name="size" id="size-s" autocomplete="off" />
-                            <label class="btn btn-outline-secondary" for="size-s">S</label>
-
-                            <input type="radio" class="btn-check" name="size" id="size-m" autocomplete="off" />
-                            <label class="btn btn-outline-secondary" for="size-m">M</label>
-
-                            <input type="radio" class="btn-check" name="size" id="size-l" autocomplete="off" />
-                            <label class="btn btn-outline-secondary" for="size-l">L</label>
-                        </div>
+                        <input type="range" 
+                               class="form-range" 
+                               min="0" 
+                               max="500" 
+                               step="10" 
+                               id="priceRange" 
+                               name="price_max" 
+                               value="<?php echo $priceMax; ?>">
                     </div>
 
                     <button class="btn btn-primary w-100">Appliquer les filtres</button>
@@ -145,10 +134,13 @@ $filtered_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="col-lg-9">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>Tous nos produits artisanaux</h2>
+
+
                     <div class="dropdown">
                         <button class="btn btn-outline-dark dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown">
                             Trier par: Pertinence
                         </button>
+                        
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Pertinence</a></li>
                             <li><a class="dropdown-item" href="#">Prix croissant</a></li>
@@ -229,6 +221,17 @@ $filtered_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         console.log('Adding product ID ' + productId + ' to cart');
         // Implement AJAX call here
     }
+
+    // Price range slider functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const priceRange = document.getElementById('priceRange');
+        const priceValue = document.getElementById('priceValue');
+
+        // Update price display when slider moves
+        priceRange.addEventListener('input', function() {
+            priceValue.textContent = this.value + ' DT';
+        });
+    });
     </script>
 
     

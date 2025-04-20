@@ -29,8 +29,8 @@ $db = Database::getInstance();
                 <li class="dropdown-submenu">
                   <a class="dropdown-item dropdown-toggle" href="#">Tapis & Kilims</a>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Runners</a></li>
-                    <li><a class="dropdown-item" href="#">Kilim</a></li>
+                    <li><a class="dropdown-item" href="tapis.php">Tapis</a></li>
+                    <li><a class="dropdown-item" href="kilim.php">Kilims</a></li>
                   </ul>
                 </li>
 
@@ -38,21 +38,21 @@ $db = Database::getInstance();
                 <li class="dropdown-submenu">
                   <a class="dropdown-item dropdown-toggle" href="#">Accessoires</a>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Écharpes</a></li>
-                    <li><a class="dropdown-item" href="#">Sacs</a></li>
-                    <li><a class="dropdown-item" href="#">Bijoux</a></li>
-                    <li><a class="dropdown-item" href="#">Babouches</a></li>
+                    <li><a class="dropdown-item" href="echarpes.php">Écharpes</a></li>
+                    <li><a class="dropdown-item" href="sacs.php">Sacs</a></li>
+                    <li><a class="dropdown-item" href="bijoux.php">Bijoux</a></li>
+                    <li><a class="dropdown-item" href="babouches.php">Babouches</a></li>
                   </ul>
                 </li>
 
                 <!-- Poterie -->
                 <li class="dropdown-submenu">
-                  <a class="dropdown-item dropdown-toggle" href="#">Homeware</a>
+                  <a class="dropdown-item dropdown-toggle" href="#">Poterie</a>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#">Decoration</a></li>
-                    <li><a class="dropdown-item" href="#">Lampshades</a></li>
-                    <li><a class="dropdown-item" href="#">Pillows</a></li>
-                    <li><a class="dropdown-item" href="#">Furniture</a></li>
+                    <li><a class="dropdown-item" href="#">Veilleuse</a></li>
+                    <li><a class="dropdown-item" href="#">Oreillers</a></li>
+                    <li><a class="dropdown-item" href="#">Meubles</a></li>
                     
                   </ul>
                 </li>
@@ -63,10 +63,7 @@ $db = Database::getInstance();
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="./assets/nouveautés.html">Nouveautés</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="">À PROPOS</a>
+              <a class="nav-link" href="a-propos.php">À PROPOS</a>
             </li>
           </ul>
 

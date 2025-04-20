@@ -27,41 +27,74 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
 <body>
     <?php include './assets/templates/navbar.php'; ?>
 
-    <!-- Hero Section -->
-    <section class="hero-section position-relative mb-5">
-        <div class="hero-overlay"></div>
-        <div class="container">
-            <div class="row align-items-center" style="min-height: 80vh">
-                <div class="col-lg-6 text-white position-relative z-2">
-                    <span class="badge bg-warning text-dark mb-3 px-3 py-2">Artisanat authentique</span>
-                    <h1 class="display-3 fw-bold mb-3">Découvrez le Meilleur<br>de l'Artisanat Tunisien</h1>
-                    <p class="lead mb-4">Des pièces uniques faites à la main par nos artisans locaux qui perpétuent un héritage ancestral.</p>
-                    <div class="d-flex gap-3">
-                        <a href="#products" class="btn btn-primary btn-lg px-4 shadow-sm">Explorer les produits</a>
-                        
+<!-- Hero Section -->
+<section class="hero-section position-relative mb-5">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="row align-items-center" style="min-height: 80vh">
+            <div class="col-lg-6 text-white position-relative z-2">
+                <span class="badge bg-warning text-dark mb-3 px-3 py-2">Artisanat authentique</span>
+                <h1 class="hero-title mb-4">Découvrez le Meilleur<br>de l'Artisanat Tunisien</h1>
+                <p class="hero-subtitle mb-4">Des pièces uniques faites à la main par nos artisans locaux qui perpétuent un héritage ancestral.</p>
+                <div class="hero-buttons">
+                    <a href="product.php" class="btn btn-primary btn-lg px-4 shadow-sm">Explorer les produits</a>
+                    <a href="artisans.php" class="btn btn-outline-light btn-lg px-4 ms-3">Nos artisans</a>
+                </div>
+            </div>
+            <div class="col-lg-6 position-relative z-2 d-none d-lg-block">
+                <div class="hero-featured-product">
+                    <img src="./assets/images/featured-product.png" alt="Produit artisanal mis en avant" class="img-fluid rounded-lg shadow-lg">
+                    <div class="hero-badge">
+                        <span>Nouveauté</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="curved-bottom">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
-                <path fill="#4d5ae6" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
-            </svg>
-        </div>
-    </section>
+    </div>
+    <div class="hero-shape">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path fill="#ffffff" fill-opacity="1" d="M0,160L48,170.7C96,181,192,203,288,197.3C384,192,480,160,576,149.3C672,139,768,149,864,181.3C960,213,1056,267,1152,261.3C1248,256,1344,192,1392,160L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+    </div>
+</section>
+<!-- Updated Image Section in index.php -->
+<!-- Replace your current image section with this code -->
 
-    <!-- Image Section -->
-    <section class="image mb-2">
-        <div class="container">
-            <div class="block-image sc-2" style="/*position in column */  " >
-                <img src="./assets/images/historic/2.jpg" alt="artisan" class="img-fluid">
+<!-- Image Section -->
+<section class="artisan-showcase">
+    <div class="container-fluid px-0">
+        <div class="row g-0">
+            <div class="col-md-6">
+                <div class="artisan-image-container">
+                    <img src="./assets/images/historic/2.jpg" alt="artisan" class="img-fluid">
+                    <div class="artisan-overlay">
+                        <div class="artisan-info">
+                            <h3>L'Art de l'Artisanat</h3>
+                            <p>Des techniques transmises de génération en génération</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-           
-    </section>
+            <div class="col-md-6">
+                <div class="artisan-text-container">
+                    <div class="artisan-text-content">
+                        <span class="artisan-badge">Notre Histoire</span>
+                        <h2>Une Tradition Ancestrale</h2>
+                        <p>L'artisanat tunisien est le reflet d'un patrimoine culturel riche et diversifié. Chaque pièce raconte une histoire et témoigne d'un savoir-faire transmis à travers les âges.</p>
+                        <p>Nos artisans perpétuent ces techniques ancestrales tout en apportant leur touche de créativité pour créer des pièces uniques qui allient tradition et modernité.</p>
+                        <a href="artisans.php" class="btn btn-outline-primary">Découvrir nos artisans</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
     <!-- Featured Categories -->
     <section class="container mb-5 py-4">
         <h2 class="text-center mb-5">Nos Catégories</h2>
+        <hr class="mx-auto" style="width: 60px; border: 2px solid #fcd34d">
+        <br>
         <div class="category-container">
             <div class="category-card category-start">
                 <div class="category-image-container">
@@ -106,6 +139,7 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
 <!-- Products Carousel -->
 <section id="products" class="container-fluid mb-5 py-5 bg-light">
     <h2 class="text-center mb-5">Nos Best-Sellers</h2>
+    <hr class="mx-auto" style="width: 60px; border: 2px solid #fcd34d">
     
     <div class="product-carousel-container">
         <!-- Navigation arrows -->
@@ -167,11 +201,24 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
 
     <?php include './assets/templates/footer.php'; ?>
 
-    <!-- Back to Top Button Script -->
-    <script>
-    document.getElementById('backToTop').addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-    </script>
+       <!-- Back to Top Button -->
+   <button id="backToTop" class="tunisian-scroll-top" style="display: none;">
+       <i class="fas fa-chevron-up"></i>
+   </button>
+   <!-- Scripts -->
+   <script>
+   // Back to Top Button Script
+   window.addEventListener('scroll', function() {
+       var backToTopButton = document.getElementById('backToTop');
+       if (window.pageYOffset > 300) {
+           backToTopButton.style.display = 'flex';
+       } else {
+           backToTopButton.style.display = 'none';
+       }
+   });
+   document.getElementById('backToTop').addEventListener('click', function() {
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+   });
+   </script>
 </body>
 </html>
