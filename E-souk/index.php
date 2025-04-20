@@ -125,7 +125,7 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
                         <i class="fas fa-heart"></i>
                     </div>
                     <div class="product-image">
-                        <img src="./assets/images/products/<?= htmlspecialchars($product['image']) ?>" 
+                        <img src="./uploads/products/<?= htmlspecialchars($product['image']) ?>" 
                              alt="<?= htmlspecialchars($product['title']) ?>">
                     </div>
                     <div class="product-details">
