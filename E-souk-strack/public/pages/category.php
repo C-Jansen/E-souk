@@ -6,29 +6,30 @@ require_once __DIR__ . '/../../config/init.php';
 
 $db = Database::getInstance();
 
-// Check if category ID is provided, redirect to home if not
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    header('Location: index.php');
-    exit();
-}
-
 // Get category ID from URL
 $category_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Fetch category information
+// Fetch category information with all fields
 $categoryQuery = $db->prepare("SELECT * FROM category WHERE id_category = ?");
 $categoryQuery->execute([$category_id]);
 $category = $categoryQuery->fetch(PDO::FETCH_ASSOC);
 
-// If category doesn't exist, redirect to home
+// Check if category exists
 if (!$category) {
-    header('Location: index.php');
-    exit();
+    // Category not found - handle gracefully
+    $page_title = "Catégorie non trouvée - E-Souk Tounsi";
+    $page_description = "Nous n'avons pas pu trouver la catégorie que vous recherchez.";
+    $category = [
+        'name' => 'Catégorie non trouvée',
+        'id_category' => 0,
+        'discription' => 'Cette catégorie n\'existe pas.', // Changed from 'description' to 'discription'
+        'image' => 'default-category.jpg'
+    ];
+} else {
+    // Set page title and description
+    $page_title = htmlspecialchars($category['name']) . " - E-Souk Tounsi";
+    $page_description = "Découvrez notre collection " . htmlspecialchars($category['name']) . " - E-Souk Tounsi";
 }
-
-// Set page title and description
-$page_title = htmlspecialchars($category['name']) . " - E-Souk Tounsi";
-$page_description = "Découvrez notre collection " . htmlspecialchars($category['name']) . " - E-Souk Tounsi";
 
 // Fetch products for this category with sorting
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'position';
@@ -42,21 +43,28 @@ if ($sort == 'price-low') {
     $order_by = 'created_at DESC';
 }
 
-$productsQuery = $db->prepare("SELECT * FROM product WHERE category_id = ? ORDER BY " . $order_by);
-$productsQuery->execute([$category_id]);
-$products = $productsQuery->fetchAll(PDO::FETCH_ASSOC);
+// Only query for products if category exists
+$products = [];
+$total_products = 0;
+$featuredImages = ['placeholder.jpg'];
 
-// Get total count of products in this category
-$total_products = count($products);
-
-// Get category-specific featured images
-$featuredImagesQuery = $db->prepare("SELECT image FROM product WHERE category_id = ? LIMIT 5");
-$featuredImagesQuery->execute([$category_id]);
-$featuredImages = $featuredImagesQuery->fetchAll(PDO::FETCH_COLUMN);
-
-// If no images available, use a placeholder
-if (empty($featuredImages)) {
-    $featuredImages = ['placeholder.jpg']; // Make sure you have this placeholder image
+if ($category['id_category'] > 0) {
+    $productsQuery = $db->prepare("SELECT * FROM product WHERE category_id = ? ORDER BY " . $order_by);
+    $productsQuery->execute([$category_id]);
+    $products = $productsQuery->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get total count of products
+    $total_products = count($products);
+    
+    // Get category-specific featured images
+    $featuredImagesQuery = $db->prepare("SELECT image FROM product WHERE category_id = ? LIMIT 5");
+    $featuredImagesQuery->execute([$category_id]);
+    $featuredImages = $featuredImagesQuery->fetchAll(PDO::FETCH_COLUMN);
+    
+    // If no images available, use a placeholder
+    if (empty($featuredImages)) {
+        $featuredImages = ['placeholder.jpg'];
+    }
 }
 ?>
 
@@ -73,48 +81,48 @@ if (empty($featuredImages)) {
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="./assets/css/category.css">
-    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/category.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        .category-hero-section {
+            background-image: url('../uploads/categories/<?= htmlspecialchars($category['image'] ?: 'default-category.jpg') ?>');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
 <body>
-    <?php include './assets/templates/navbar.php'; ?>
+    <?php include '../templates/navbar.php'; ?>
 
-    <!-- Enhanced Hero Section with Category Banner - No Wave -->
-<section class="category-hero-section">
-    <div class="hero-bg-overlay"></div>
-    <div class="container position-relative" style="z-index: 2;">
-        <div class="row align-items-center">
-            <div class="col-lg-8 text-white">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.php">Accueil</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($category['name']) ?></li>
-                    </ol>
-                </nav>
-                <h1 class="hero-title"><?= htmlspecialchars($category['name']) ?></h1>
-                
-                <?php if ($category_id == 1): // Rugs & Kilim ?>
-                <p class="hero-subtitle">Nous proposons des interprétations traditionnelles et modernes de l'ancien artisanat tunisien de tissage de tapis. Vous trouverez un large éventail d'échantillons et de tapis prêts à l'emploi.</p>
-                <?php elseif ($category_id == 2): // Homeware ?>
-                <p class="hero-subtitle">Découvrez notre collection unique de produits pour la maison qui allie artisanat traditionnel et design moderne.</p>
-                <?php elseif ($category_id == 3): // Accessories ?>
-                <p class="hero-subtitle">Parcourez nos accessoires tunisiens fabriqués à la main par des artisans qualifiés utilisant des techniques traditionnelles.</p>
-                <?php else: ?>
-                <p class="hero-subtitle">Explorez notre collection de produits tunisiens de haute qualité dans cette catégorie.</p>
-                <?php endif; ?>
-                
-                <div class="hero-buttons d-flex mt-4">
-                    <a href="#product-grid" class="btn btn-primary me-3">Découvrir les produits</a>
-                    <a href="index.php" class="btn btn-outline-light">Retour à l'accueil</a>
+    <!-- Enhanced Hero Section with Category Banner -->
+    <section class="category-hero-section">
+        <div class="hero-bg-overlay"></div>
+        <div class="container position-relative" style="z-index: 2;">
+            <div class="row align-items-center">
+                <div class="col-lg-8 text-white">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.php">Accueil</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($category['name']) ?></li>
+                        </ol>
+                    </nav>
+                    <h1 class="hero-title"><?= htmlspecialchars($category['name']) ?></h1>
+                    <p class="hero-subtitle">
+                        <?php if (isset($category['discription']) && $category['discription'] !== null): ?>
+                            <?= htmlspecialchars(substr($category['discription'], 0, 150)) ?>
+                            <?= (strlen($category['discription']) > 150) ? '...' : '' ?>
+                        <?php else: ?>
+                            Découvrez notre sélection de produits <?= htmlspecialchars($category['name']) ?>
+                        <?php endif; ?>
+                    </p>
+                    <div class="hero-buttons d-flex mt-4">
+                        <a href="#product-grid" class="btn btn-primary me-3">Découvrir les produits</a>
+                        <a href="index.php" class="btn btn-outline-light">Retour à l'accueil</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
-
-
-
+    </section>
 
     <!-- Category Overview Section -->
     <section class="category-content-section">
@@ -123,33 +131,23 @@ if (empty($featuredImages)) {
                 <div class="row">
                     <div class="col-lg-7">
                         <h2 class="mb-4"><?= htmlspecialchars($category['name']) ?></h2>
-                        
-                        <?php if ($category_id == 1): // Expanded description for Rugs & Kilim ?>
                         <div class="category-description">
-                            <p>En pensant à Aladdin et au conte du tapis magique, on peut supposer que le tapis magique doit être tunisien. En effet, tout comme les tapis persans racontent l'histoire ancienne de la Perse, les tapis tunisiens racontent l'histoire des Berbères ou Amazighs, comme ils préfèrent être appelés.</p>
-                            <p>Les tapis tunisiens sont un témoin du riche patrimoine nord-africain. Il existe différents types de tapis selon la spécialité régionale.</p>
+                            <?php if (isset($category['discription']) && $category['discription'] !== null): ?>
+                                <?= nl2br(htmlspecialchars($category['discription'])) ?>
+                            <?php else: ?>
+                                <p>Découvrez notre gamme exclusive de produits <?= htmlspecialchars($category['name']) ?>.</p>
+                            <?php endif; ?>
                         </div>
-                        <?php elseif ($category_id == 2): // Homeware ?>
-                        <div class="category-description">
-                            <p>Nous offrons des textiles fabriqués à partir de coton, de lin et de laine avec une finition de haute qualité. Notre collection comprend des fouta légères, des coussins et des couvertures en laine artisanales - parfaits pour ajouter de la chaleur à tout intérieur.</p>
-                            <p>Chaque pièce est créée avec soin par des artisans tunisiens qui perpétuent des traditions centenaires tout en intégrant des touches contemporaines.</p>
-                        </div>
-                        <?php elseif ($category_id == 3): // Accessories ?>
-                        <div class="category-description">
-                            <p>Nos accessoires sont l'expression de l'artisanat tunisien - des bijoux aux sacs en passant par les foulards et les chapeaux. Chaque pièce est fabriquée à la main en utilisant des techniques traditionnelles.</p>
-                            <p>Découvrez des accessoires uniques qui ajoutent une touche d'authenticité et d'élégance à votre style quotidien.</p>
-                        </div>
-                        <?php else: ?>
-                        <div class="category-description">
-                            <p>Explorez notre sélection de produits tunisiens de haute qualité dans cette catégorie. Notre collection met en valeur l'artisanat traditionnel tunisien avec des pièces uniques et authentiques.</p>
-                        </div>
-                        <?php endif; ?>
                     </div>
                     <div class="col-lg-5">
                         <div class="category-featured">
-                            <?php foreach ($featuredImages as $image): ?>
-                            <img src="./uploads/products/<?= htmlspecialchars($image) ?>" alt="<?= htmlspecialchars($category['name']) ?>" class="img-fluid" onerror="this.src='./assets/images/placeholder.jpg'">
-                            <?php endforeach; ?>
+                            <?php if (!empty($featuredImages) && $featuredImages[0] != 'placeholder.jpg'): ?>
+                            <div class="featured-images-grid">
+                                <?php foreach(array_slice($featuredImages, 0, 4) as $img): ?>
+                                <img src="../uploads/products/<?= htmlspecialchars($img) ?>" alt="Featured Product" class="img-fluid">
+                                <?php endforeach; ?>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -276,15 +274,17 @@ if (empty($featuredImages)) {
                                             <i class="far fa-heart"></i>
                                         </div>
                                         <div class="product-image">
-                                            <img src="./uploads/products/<?= htmlspecialchars($product['image']) ?>" 
-                                                alt="<?= htmlspecialchars($product['title']) ?>">
-                                            <?php if ($product['is_best_seller']): ?>
+                                            <a href="product.php?id=<?= $product['id_product'] ?>">
+                                                <img src="../uploads/products/<?= htmlspecialchars($product['image']) ?>" 
+                                                     alt="<?= htmlspecialchars($product['title']) ?>">
+                                            </a>
+                                            <?php if (isset($product['is_best_seller']) && $product['is_best_seller']): ?>
                                                 <span class="best-seller-badge">Best Seller</span>
                                             <?php endif; ?>
                                         </div>
                                         <div class="product-details">
                                             <div class="d-flex justify-content-between">
-                                                <h5><?= htmlspecialchars($product['title']) ?></h5>
+                                                <h5><a href="product.php?id=<?= $product['id_product'] ?>"><?= htmlspecialchars($product['title']) ?></a></h5>
                                                 <span class="price"><?= number_format($product['price'], 2) ?> DT</span>
                                             </div>
                                             <p class="product-description"><?= substr(htmlspecialchars($product['description']), 0, 80) ?>...</p>
@@ -327,16 +327,14 @@ if (empty($featuredImages)) {
         </div>
     </section>
 
-    <?php include './assets/templates/Topbtn.php'; ?>
-    <?php include './assets/templates/newsletter.php'; ?>                    
-    <?php include './assets/templates/footer.php'; ?>
+    <?php include '../templates/Topbtn.php'; ?>
+    <?php include '../templates/newsletter.php'; ?>                    
+    <?php include '../templates/footer.php'; ?>
 
     <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Custom Scripts -->
     <script>
-
     // Sort functionality
     const sortSelect = document.getElementById('sort-select');
     if (sortSelect) {
@@ -372,9 +370,6 @@ if (empty($featuredImages)) {
                     setTimeout(() => {
                         this.innerHTML = originalText;
                     }, 1500);
-                    
-                    // Update cart icon or count if needed
-                    // This depends on your cart implementation
                 } else {
                     // Error state
                     this.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erreur';
@@ -399,7 +394,6 @@ if (empty($featuredImages)) {
             
             // Here you can add AJAX to update wishlist in the database
             // const productId = this.closest('.product-card').querySelector('.add-to-cart-btn').getAttribute('data-product-id');
-            // Add your wishlist logic here
         });
     });
     </script>

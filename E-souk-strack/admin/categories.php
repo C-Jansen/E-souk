@@ -51,6 +51,7 @@ if (isset($_GET['delete_id']) && !empty($_GET['delete_id'])) {
 // Add/Edit category
 if (isset($_POST['submit'])) {
     $category_name = $_POST['category_name'];
+    $category_description = $_POST['category_description'] ?? '';
     $image_name = null;
     
     // Handle image upload
@@ -91,9 +92,10 @@ if (isset($_POST['submit'])) {
             $stmt->execute();
             $old_image = $stmt->fetch(PDO::FETCH_ASSOC)['image'];
             
-            $query = "UPDATE category SET name = :name, image = :image WHERE id_category = :id";
+            $query = "UPDATE category SET name = :name, discription = :description, image = :image WHERE id_category = :id";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':name', $category_name, PDO::PARAM_STR);
+            $stmt->bindParam(':description', $category_description, PDO::PARAM_STR);
             $stmt->bindParam(':image', $image_name, PDO::PARAM_STR);
             $stmt->bindParam(':id', $edit_id, PDO::PARAM_INT);
             
@@ -105,17 +107,19 @@ if (isset($_POST['submit'])) {
                 }
             }
         } else {
-            $query = "UPDATE category SET name = :name WHERE id_category = :id";
+            $query = "UPDATE category SET name = :name, discription = :description WHERE id_category = :id";
             $stmt = $db->prepare($query);
             $stmt->bindParam(':name', $category_name, PDO::PARAM_STR);
+            $stmt->bindParam(':description', $category_description, PDO::PARAM_STR);
             $stmt->bindParam(':id', $edit_id, PDO::PARAM_INT);
         }
         $success_msg = "Category updated successfully";
     } else {
         // Add new category
-        $query = "INSERT INTO category (name, image) VALUES (:name, :image)";
+        $query = "INSERT INTO category (name, discription, image) VALUES (:name, :description, :image)";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':name', $category_name, PDO::PARAM_STR);
+        $stmt->bindParam(':description', $category_description, PDO::PARAM_STR);
         $stmt->bindParam(':image', $image_name, PDO::PARAM_STR);
         $success_msg = "Category added successfully";
     }
@@ -199,7 +203,15 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     
                                     <div class="mb-3">
                                         <label for="category_name" class="form-label">Category Name</label>
-                                        <input type="text" class="form-control" id="category_name" name="category_name" value="<?php echo $edit_category ? $edit_category['name'] : ''; ?>" required>
+                                        <input type="text" class="form-control" id="category_name" name="category_name" 
+                                            value="<?php echo $edit_category ? htmlspecialchars($edit_category['name']) : ''; ?>" required>
+                                    </div>
+                                    
+                                    <!-- Add description field -->
+                                    <div class="mb-3">
+                                        <label for="category_description" class="form-label">Description</label>
+                                        <textarea class="form-control" id="category_description" name="category_description" 
+                                            rows="3"><?php echo $edit_category && isset($edit_category['discription']) ? htmlspecialchars($edit_category['discription']) : ''; ?></textarea>
                                     </div>
                                     
                                     <div class="mb-3">
@@ -237,6 +249,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 <th>#</th>
                                                 <th>Image</th>
                                                 <th>Name</th>
+                                                <th>Description</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -256,7 +269,12 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                         <?php endif; ?>
                                                     </td>
                                                     <td><?php echo htmlspecialchars($row['name']); ?></td>
-                                                    <td>
+                                                    <td><?php 
+                                                    $content = isset($row['discription']) ? $row['discription'] : '';
+                                                    // Display the content with truncation if needed
+                                                    echo htmlspecialchars(substr($content, 0, 50)) . (strlen($content) > 50 ? '...' : '');
+                                                ?></td>
+                                                                                                    <td>
                                                         <a href="categories.php?edit_id=<?php echo $row['id_category']; ?>" class="btn btn-sm btn-primary">Edit</a>
                                                         <a href="categories.php?delete_id=<?php echo $row['id_category']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this category?')">Delete</a>
                                                     </td>
@@ -266,7 +284,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             else: 
                                             ?>
                                                 <tr>
-                                                    <td colspan="4" class="text-center">No categories found</td>
+                                                    <td colspan="5" class="text-center">No categories found</td>
                                                 </tr>
                                             <?php endif; ?>
                                         </tbody>

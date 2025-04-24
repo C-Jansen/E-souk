@@ -81,9 +81,10 @@ DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `id_category` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `discription` text COLLATE utf8mb4_general_ci NOT NULL,
   `image` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_category`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,7 +93,7 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (1,'Rugs $ kilm','6809a8d9ee691.jpg'),(2,'Homeware','6809a8cae1228.jpg'),(3,'Accessories','6809a7eea6b84.jpg'),(4,'a','6809aa47ac5ee.png');
+INSERT INTO `category` VALUES (1,'Rugs $ kilm','','6809a8d9ee691.jpg'),(2,'Homeware','','6809a8cae1228.jpg'),(3,'Accessories','sdsd','6809a7eea6b84.jpg');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -308,4 +309,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-24  4:16:19
+-- Dump completed on 2025-04-24 20:35:24

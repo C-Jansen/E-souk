@@ -28,7 +28,7 @@ $db = Database::getInstance();
               <ul class="dropdown-menu">
                 <!-- Tapis & Kilims -->
                 <li class="dropdown-submenu">
-                  <a class="dropdown-item dropdown-toggle" href="#">Tapis & Kilims</a>
+                  <a class="dropdown-item dropdown-toggle" href="category.php?id=">Tapis & Kilims</a>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#">Tapis</a></li>
                     <li><a class="dropdown-item" href="#">Kilims</a></li>
@@ -37,7 +37,7 @@ $db = Database::getInstance();
 
                 <!-- Accessoires -->
                 <li class="dropdown-submenu">
-                  <a class="dropdown-item dropdown-toggle" href="#">Accessoires</a>
+                  <a class="dropdown-item dropdown-toggle" href="category.php?id=">Accessoires</a>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#">Écharpes</a></li>
                     <li><a class="dropdown-item" href="#">Sacs</a></li>
@@ -48,7 +48,7 @@ $db = Database::getInstance();
 
                 <!-- Poterie -->
                 <li class="dropdown-submenu">
-                  <a class="dropdown-item dropdown-toggle" href="#">Poterie</a>
+                  <a class="dropdown-item dropdown-toggle" href="category.php?id=">Poterie</a>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="#">Decoration</a></li>
                     <li><a class="dropdown-item" href="#">Veilleuse</a></li>

@@ -70,7 +70,7 @@ $filtered_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php"><i class="fas fa-home"></i> Accueil</a></li>
-                <li class="breadcrumb-item"><a href="categories.php">Catégories</a></li>
+                <li class="breadcrumb-item"><a href="category-details.php">Catégories</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Tous les produits</li>
             </ol>
         </nav>

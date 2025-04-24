@@ -11,7 +11,6 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
 <html lang="fr">
 <?php include '../templates/header.php'; ?>
 <body>
-
 <?php include '../templates/navbar.php'; ?>
 
     <!-- Hero Section -->
@@ -82,7 +81,7 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
         <div class="category-container">
             <div class="category-card category-start">
                 <div class="category-image-container">
-                    <img src="../assets/images/Accessories.jpg" alt="Accessories">
+                    <img src="../assets/images/category/Accessories.jpg" alt="Accessories">
                     <div class="category-overlay">
                         <h5>Accessories</h5>
                         <p>Découvrez notre collection d'accessoires artisanaux.</p>
@@ -93,7 +92,7 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
 
             <div class="category-card category-end">
                 <div class="category-image-container">
-                    <img src="../assets/images/klim.jpg" alt="Rugs & Kilim">
+                    <img src="../assets/images/category/klim.jpg" alt="Rugs & Kilim">
                     <div class="category-overlay">
                         <h5>Rugs & Kilim</h5>
                         <p>Explorez nos tapis et kilims traditionnels faits à la main.</p>
@@ -104,7 +103,7 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
             
             <div class="category-card category-start">
                 <div class="category-image-container">
-                    <img src="../assets/images/Handcrafted-ceramic.jpg" alt="Handcrafted Ceramics">
+                    <img src="../assets/images/category/Handcrafted-ceramic.jpg" alt="Handcrafted Ceramics">
                     <div class="category-overlay">
                         <h5>Handcrafted Ceramics</h5>
                         <p>Découvrez notre collection de céramiques artisanales tunisiennes faites à la main.</p>
@@ -115,7 +114,7 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
         </div>
         <div class="text-center mt-4">
             <p class="lead">Découvrez toutes nos catégories d'artisanat tunisien traditionnel</p>
-            <a href="categories.php" class="btn btn-primary px-4 py-2">Voir toutes les catégories</a>
+            <a href="category.php" class="btn btn-primary px-4 py-2">Voir toutes les catégories</a>
         </div>
 
     </section>
@@ -140,7 +139,7 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
             foreach($productsArray as $product): ?>
                 <div class="product-card">
                     <div class="wishlist-icon">
-                        <i class="fas fa-heart"></i>
+                        <i class="far fa-heart"></i>
                     </div>
                     <div class="product-image">
                     <img src="../uploads/products/<?= htmlspecialchars($product['image']) ?>" 
@@ -166,7 +165,7 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
 
     <?php include '../templates/Topbtn.php'; ?>
     <?php include '../templates/newsletter.php'; ?>
-     <?php include '../templates/footer.php'; ?>
+    <?php include '../templates/footer.php'; ?>
      
                 
 </body>
