@@ -1,7 +1,7 @@
 <?php 
 session_start();
 require_once __DIR__ . '/../../config/init.php';
-require_once ROOT_PATH . '/core/connection.php';
+
 
 $page_title = "Panier - E-Souk Tounsi";
 $page_description = "Consultez et gérez les articles dans votre panier d'achat. Finalisez votre commande d'artisanat tunisien authentique.";
@@ -136,7 +136,6 @@ $total = $subtotal + $shipping;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title) ?></title>
     <meta name="description" content="<?= htmlspecialchars($page_description) ?>">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">

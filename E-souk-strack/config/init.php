@@ -1,57 +1,44 @@
 <?php
-// Environment detection
-define('ENVIRONMENT', isset($_SERVER['APP_ENV']) ? $_SERVER['APP_ENV'] : 'development');
+// Basic error reporting for development
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Error reporting based on environment
-if (ENVIRONMENT === 'development') {
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-} else {
-    error_reporting(0);
-    ini_set('display_errors', 0);
-}
-
-// Define base paths
+// Define essential paths
 define('ROOT_PATH', dirname(__DIR__));
-define('ASSETS_PATH', ROOT_PATH . '/public/assets');
-define('UPLOADS_PATH', ROOT_PATH . '/public/uploads');
+define('PUBLIC_PATH', ROOT_PATH . '/public');
+define('ADMIN_PATH', ROOT_PATH . '/admin');
 define('CONFIG_PATH', ROOT_PATH . '/config');
+define('CORE_PATH', ROOT_PATH . '/core');
 
-// Define application URLs with trailing slash handling
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+
+// Asset paths
+define('ASSETS_PATH', PUBLIC_PATH . '/assets');
+define('UPLOADS_PATH', PUBLIC_PATH . '/uploads');
+define('TEMPLATES_PATH', PUBLIC_PATH . '/templates');
+
+// Define URLs
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
 $domainName = $_SERVER['HTTP_HOST'];
 $basePath = '/E-souk-strack/';
 define('ROOT_URL', $protocol . $domainName . $basePath);
 define('ASSETS_URL', ROOT_URL . 'public/assets/');
-define('UPLOADS_URL', ROOT_URL . 'public/uploads/');
 
-// Security headers
-header("X-XSS-Protection: 1; mode=block");
-header("X-Content-Type-Options: nosniff");
-header("X-Frame-Options: SAMEORIGIN");
-header("Referrer-Policy: strict-origin-when-cross-origin");
 
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
-    // Set secure cookie parameters if in production
-    if (ENVIRONMENT === 'production') {
-        ini_set('session.cookie_httponly', 1);
-        ini_set('session.cookie_secure', 1);
-        ini_set('session.use_only_cookies', 1);
-    }
     session_start();
 }
 
-// Database connection - with lazy loading
-function getDB() {
-    static $db = null;
-    if ($db === null) {
-        require_once ROOT_PATH . '/core/connection.php';
-        $db = Database::getInstance();
-    }
-    return $db;
+// Simple database connection
+require_once ROOT_PATH . '/core/connection.php';
+$db = Database::getInstance();
+
+// Helper function to get asset URLs
+function asset($path) {
+    return ASSETS_URL . ltrim($path, '/');
 }
 
-// Get database connection only when needed
-$db = getDB();
-?>
+// Helper function to get upload URLs
+function upload($path) {
+    return UPLOADS_URL . ltrim($path, '/');
+}

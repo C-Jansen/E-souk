@@ -354,118 +354,6 @@
 	box-shadow: 0 5px 15px rgba(77, 90, 230, 0.3);
 }
 
-/* =================== Card Component =================== */
-/* Category Container */
-.category-container {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: stretch;
-	gap: 15px;
-	min-height: 500px;
-	width: auto;
-	position: relative;
-}
-/* Category Card Base Styles */
-.category-card {
-	width: auto;
-	height: auto;
-	background-color: var(--color-white);
-	border-radius: 10px;
-	overflow: hidden;
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-	margin-bottom: 20px;
-	transition: transform 0.3s ease, box-shadow 0.3s ease;
-	position: relative;
-}
-/* Card positioning classes */
-.category-start {
-	align-self: flex-start;
-}
-.category-end {
-	align-self: flex-end;
-}
-.category-center {
-	align-self: flex-start;
-}
-/* Image container */
-.category-image-container {
-	position: relative;
-	overflow: hidden;
-	height: 220px;
-	width: 100%;
-}
-.category-card img {
-	width: auto;
-	height: 100%;
-	object-fit: cover;
-	object-position: center;
-	transition: transform 0.5s ease;
-}
-/* Overlay styles */
-.category-overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(43, 54, 132, 0.85);
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	padding: 20px;
-	opacity: 0;
-	transition: opacity 0.3s ease;
-	text-align: center;
-	color: var(--color-white);
-}
-.category-overlay h5 {
-	font-size: 1.5rem;
-	margin-bottom: 10px;
-	transform: translateY(-20px);
-	transition: transform 0.4s ease;
-}
-.category-overlay p {
-	margin-bottom: 15px;
-	transform: translateY(20px);
-	transition: transform 0.4s ease;
-}
-.category-btn {
-	display: inline-block;
-	padding: 8px 20px;
-	background-color: transparent;
-	color: var(--color-white);
-	border: 2px solid var(--color-white);
-	border-radius: 4px;
-	text-decoration: none;
-	font-weight: 500;
-	transform: translateY(20px);
-	opacity: 0;
-	transition: all 0.4s ease;
-}
-/* Hover effects */
-.category-card:hover {
-	transform: translateY(-5px);
-	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-.category-card:hover img {
-	transform: scale(1.1);
-}
-.category-card:hover .category-overlay {
-	opacity: 1;
-}
-.category-card:hover .category-overlay h5,.category-card:hover .category-overlay p {
-	transform: translateY(0);
-}
-.category-card:hover .category-btn {
-	opacity: 1;
-	transform: translateY(0);
-}
-.category-btn:hover {
-	background-color: var(--color-white);
-	color: var(--color-primary);
-}
 /* =================== Product Carousel =================== */
 .product-carousel-container {
 	position: relative;
@@ -1035,20 +923,6 @@ footer a:hover i {
 			margin: 0 auto 2rem auto;
 		}
 	}
-	.category-container {
-		flex-direction: column;
-		align-items: center;
-	}
-	.category-card {
-		width: 80%;
-		margin-bottom: 30px;
-	}
-	.category-image-container {
-		height: 250px;
-	}
-	.category-start,.category-end,.category-center {
-		align-self: auto;
-	}
 }
 @media (max-width: 850px) {
 	.wave-container::before {
@@ -1062,13 +936,5 @@ footer a:hover i {
 	}
 	.tunisian-scroll-top {
 		display: none !important;
-	}
-}
-@media (max-width: 576px) {
-	.category-card {
-		width: 100%;
-	}
-	.category-image-container {
-		height: 180px;
 	}
 }

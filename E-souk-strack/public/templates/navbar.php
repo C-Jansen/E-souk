@@ -26,38 +26,37 @@ $db = Database::getInstance();
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" >Produits</a>
               <ul class="dropdown-menu">
-                <!-- Tapis & Kilims -->
-                <li class="dropdown-submenu">
-                  <a class="dropdown-item dropdown-toggle" href="category.php?id=">Tapis & Kilims</a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Tapis</a></li>
-                    <li><a class="dropdown-item" href="#">Kilims</a></li>
-                  </ul>
-                </li>
-
-                <!-- Accessoires -->
-                <li class="dropdown-submenu">
-                  <a class="dropdown-item dropdown-toggle" href="category.php?id=">Accessoires</a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Écharpes</a></li>
-                    <li><a class="dropdown-item" href="#">Sacs</a></li>
-                    <li><a class="dropdown-item" href="#">Bijoux</a></li>
-                    <li><a class="dropdown-item" href="#">Babouches</a></li>
-                  </ul>
-                </li>
-
-                <!-- Poterie -->
-                <li class="dropdown-submenu">
-                  <a class="dropdown-item dropdown-toggle" href="category.php?id=">Poterie</a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Decoration</a></li>
-                    <li><a class="dropdown-item" href="#">Veilleuse</a></li>
-                    <li><a class="dropdown-item" href="#">Oreillers</a></li>
-                    <li><a class="dropdown-item" href="#">Meubles</a></li>
-                    
-                  </ul>
-                </li>
-
+                
+              <?php
+    // Fetch categories from database
+    $stmt = $db->prepare("SELECT id_category, name FROM category ORDER BY name ASC");
+    $stmt->execute();
+    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Display first 5 categories directly
+    $categoriesCount = count($categories);
+    $displayLimit = 3;
+    
+    for ($i = 0; $i < min($displayLimit, $categoriesCount); $i++) {
+      echo '<li><a class="dropdown-item" href="' . ROOT_URL . 'public/pages/category.php?id=' . $categories[$i]['id_category'] . '">' . 
+           htmlspecialchars($categories[$i]['name']) . '</a></li>';
+    }
+    
+    // If there are more than 5 categories, create a nested dropdown
+    if ($categoriesCount > $displayLimit) {
+      echo '<li class="dropdown-submenu">';
+      echo '<a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">Autres catégories</a>';
+      echo '<ul class="dropdown-menu dropdown-submenu">';
+      
+      for ($i = $displayLimit; $i < $categoriesCount; $i++) {
+        echo '<li><a class="dropdown-item" href="' . ROOT_URL . 'public/pages/category.php?id=' . $categories[$i]['id_category'] . '">' . 
+             htmlspecialchars($categories[$i]['name']) . '</a></li>';
+      }
+      
+      echo '</ul></li>';
+    }
+    ?>
+                
                 <li><hr class="dropdown-divider" /></li>
                 <li><a class="dropdown-item" href="<?php echo ROOT_URL; ?>public/pages/product.php">Tous les produits</a></li>
               </ul>

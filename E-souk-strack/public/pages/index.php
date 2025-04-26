@@ -4,8 +4,6 @@ require_once __DIR__ . '/../../config/init.php';
 
 $page_title = "Accueil - E-Souk Tounsi";
 $page_description = "Découvrez l'artisanat tunisien de qualité";
-
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -65,7 +63,7 @@ $page_description = "Découvrez l'artisanat tunisien de qualité";
                         <h2>Une Tradition Ancestrale</h2>
                         <p>L'artisanat tunisien est le reflet d'un patrimoine culturel riche et diversifié. Chaque pièce raconte une histoire et témoigne d'un savoir-faire transmis à travers les âges.</p>
                         <p>Nos artisans perpétuent ces techniques ancestrales tout en apportant leur touche de créativité pour créer des pièces uniques qui allient tradition et modernité.</p>
-                        <a href="artisans.php" class="btn btn-outline-primary">Découvrir nos artisans</a>
+                        <a href="vision.php" class="btn btn-outline-primary">Découvrir nos artisans</a>
                     </div>
                 </div>
             </div>

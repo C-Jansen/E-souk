@@ -211,9 +211,6 @@ $page_description = "Découvrez notre histoire et notre mission de promotion de 
             </div>
         </div>
     </section>
-
-    
-
     <?php include '../templates/Topbtn.php'; ?>
     <?php include '../templates/newsletter.php'; ?>
     <?php include '../templates/footer.php'; ?>

@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 // Check admin login
@@ -7,38 +6,32 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["user_role"] !== "admin") {
     header("location: login.php");
     exit;
 }
+
 require_once '../config/init.php';
-$db = Database::getInstance(); // This returns a PDO object
+$db = Database::getInstance();
 
 // Define upload directory
-$upload_dir = '../uploads/categories/';
+$upload_dir = '../root_uploads/categories/';
 if (!file_exists($upload_dir)) {
     mkdir($upload_dir, 0777, true);
 }
 
-// Delete category
+// Handle delete operation
 if (isset($_GET['delete_id']) && !empty($_GET['delete_id'])) {
     $delete_id = $_GET['delete_id'];
     
-    // Get the image filename before deleting
-    $query = "SELECT image FROM category WHERE id_category = :id";
-    $stmt = $db->prepare($query);
-    $stmt->bindParam(':id', $delete_id, PDO::PARAM_INT);
-    $stmt->execute();
+    // Get image before deleting record
+    $stmt = $db->prepare("SELECT image FROM category WHERE id_category = ?");
+    $stmt->execute([$delete_id]);
     $category = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    // Delete the record
-    $query = "DELETE FROM category WHERE id_category = :id";
-    $stmt = $db->prepare($query);
-    $stmt->bindParam(':id', $delete_id, PDO::PARAM_INT);
-    
-    if ($stmt->execute()) {
-        // Delete the image file if it exists
+    // Delete the category
+    $stmt = $db->prepare("DELETE FROM category WHERE id_category = ?");
+    if ($stmt->execute([$delete_id])) {
+        // Delete associated image if exists
         if (!empty($category['image'])) {
             $image_path = $upload_dir . $category['image'];
-            if (file_exists($image_path)) {
-                unlink($image_path);
-            }
+            if (file_exists($image_path)) unlink($image_path);
         }
         $_SESSION['success'] = "Category deleted successfully";
     } else {
@@ -48,25 +41,36 @@ if (isset($_GET['delete_id']) && !empty($_GET['delete_id'])) {
     exit();
 }
 
-// Add/Edit category
+// Handle form submission (Add/Edit)
 if (isset($_POST['submit'])) {
-    $category_name = $_POST['category_name'];
-    $category_description = $_POST['category_description'] ?? '';
+    $category_name = trim($_POST['category_name']);
+    $category_description = trim($_POST['category_description'] ?? '');
     $image_name = null;
+    $edit_id = $_POST['edit_id'] ?? null;
     
-    // Handle image upload
+    // Process image upload if provided
     if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] == 0) {
         $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-        $filename = $_FILES['category_image']['name'];
-        $file_ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $file_ext = strtolower(pathinfo($_FILES['category_image']['name'], PATHINFO_EXTENSION));
         
         if (in_array($file_ext, $allowed)) {
-            // Generate unique filename
             $new_filename = uniqid() . '.' . $file_ext;
             $upload_path = $upload_dir . $new_filename;
             
             if (move_uploaded_file($_FILES['category_image']['tmp_name'], $upload_path)) {
                 $image_name = $new_filename;
+                
+                // Delete old image if updating
+                if ($edit_id) {
+                    $stmt = $db->prepare("SELECT image FROM category WHERE id_category = ?");
+                    $stmt->execute([$edit_id]);
+                    $old_image = $stmt->fetch(PDO::FETCH_COLUMN);
+                    
+                    if (!empty($old_image)) {
+                        $old_path = $upload_dir . $old_image;
+                        if (file_exists($old_path)) unlink($old_path);
+                    }
+                }
             } else {
                 $_SESSION['error'] = "Failed to upload image";
                 header('Location: categories.php');
@@ -79,52 +83,26 @@ if (isset($_POST['submit'])) {
         }
     }
     
-    if (isset($_POST['edit_id']) && !empty($_POST['edit_id'])) {
+    // Update or insert category
+    if ($edit_id) {
         // Update existing category
-        $edit_id = $_POST['edit_id'];
-        
-        // Check if we need to include image in the update
         if ($image_name) {
-            // Get the old image to delete it
-            $query = "SELECT image FROM category WHERE id_category = :id";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(':id', $edit_id, PDO::PARAM_INT);
-            $stmt->execute();
-            $old_image = $stmt->fetch(PDO::FETCH_ASSOC)['image'];
-            
-            $query = "UPDATE category SET name = :name, discription = :description, image = :image WHERE id_category = :id";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(':name', $category_name, PDO::PARAM_STR);
-            $stmt->bindParam(':description', $category_description, PDO::PARAM_STR);
-            $stmt->bindParam(':image', $image_name, PDO::PARAM_STR);
-            $stmt->bindParam(':id', $edit_id, PDO::PARAM_INT);
-            
-            // Delete the old image if it exists
-            if (!empty($old_image)) {
-                $old_path = $upload_dir . $old_image;
-                if (file_exists($old_path)) {
-                    unlink($old_path);
-                }
-            }
+            $sql = "UPDATE category SET name = ?, discription = ?, image = ? WHERE id_category = ?";
+            $params = [$category_name, $category_description, $image_name, $edit_id];
         } else {
-            $query = "UPDATE category SET name = :name, discription = :description WHERE id_category = :id";
-            $stmt = $db->prepare($query);
-            $stmt->bindParam(':name', $category_name, PDO::PARAM_STR);
-            $stmt->bindParam(':description', $category_description, PDO::PARAM_STR);
-            $stmt->bindParam(':id', $edit_id, PDO::PARAM_INT);
+            $sql = "UPDATE category SET name = ?, discription = ? WHERE id_category = ?";
+            $params = [$category_name, $category_description, $edit_id];
         }
         $success_msg = "Category updated successfully";
     } else {
         // Add new category
-        $query = "INSERT INTO category (name, discription, image) VALUES (:name, :description, :image)";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':name', $category_name, PDO::PARAM_STR);
-        $stmt->bindParam(':description', $category_description, PDO::PARAM_STR);
-        $stmt->bindParam(':image', $image_name, PDO::PARAM_STR);
+        $sql = "INSERT INTO category (name, discription, image) VALUES (?, ?, ?)";
+        $params = [$category_name, $category_description, $image_name];
         $success_msg = "Category added successfully";
     }
     
-    if ($stmt->execute()) {
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute($params)) {
         $_SESSION['success'] = $success_msg;
     } else {
         $_SESSION['error'] = "Error: " . implode(", ", $stmt->errorInfo());
@@ -133,20 +111,16 @@ if (isset($_POST['submit'])) {
     exit();
 }
 
-// Get category data for editing
+// Load category for editing if requested
 $edit_category = null;
 if (isset($_GET['edit_id']) && !empty($_GET['edit_id'])) {
-    $edit_id = $_GET['edit_id'];
-    $query = "SELECT * FROM category WHERE id_category = :id";
-    $stmt = $db->prepare($query);
-    $stmt->bindParam(':id', $edit_id, PDO::PARAM_INT);
-    $stmt->execute();
+    $stmt = $db->prepare("SELECT * FROM category WHERE id_category = ?");
+    $stmt->execute([$_GET['edit_id']]);
     $edit_category = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 // Fetch all categories
-$query = "SELECT * FROM category ORDER BY name";
-$stmt = $db->prepare($query);
+$stmt = $db->prepare("SELECT * FROM category ORDER BY name");
 $stmt->execute();
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -154,14 +128,9 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management - Admin Panel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/admin.css">
-</head>
-<body>
     <?php include('includes/header.php'); ?>
+<body>
+   
     
     <div class="container-fluid">
         <div class="row">
@@ -246,7 +215,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <table class="table table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th>#</th>
+                                                <th>ID</th>
                                                 <th>Image</th>
                                                 <th>Name</th>
                                                 <th>Description</th>
@@ -260,7 +229,8 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 foreach ($categories as $row): 
                                             ?>
                                                 <tr>
-                                                    <td><?php echo $counter++; ?></td>
+                                                    
+                                                    <td><?php echo $row['id_category']; ?></td>
                                                     <td>
                                                         <?php if (!empty($row['image'])): ?>
                                                             <img src="<?php echo $upload_dir . $row['image']; ?>" alt="Category" class="img-thumbnail" style="max-width: 50px; max-height: 50px;">
@@ -274,7 +244,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     // Display the content with truncation if needed
                                                     echo htmlspecialchars(substr($content, 0, 50)) . (strlen($content) > 50 ? '...' : '');
                                                 ?></td>
-                                                                                                    <td>
+                                                    <td>
                                                         <a href="categories.php?edit_id=<?php echo $row['id_category']; ?>" class="btn btn-sm btn-primary">Edit</a>
                                                         <a href="categories.php?delete_id=<?php echo $row['id_category']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this category?')">Delete</a>
                                                     </td>
@@ -284,7 +254,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             else: 
                                             ?>
                                                 <tr>
-                                                    <td colspan="5" class="text-center">No categories found</td>
+                                                    <td colspan="6" class="text-center">No categories found</td>
                                                 </tr>
                                             <?php endif; ?>
                                         </tbody>
@@ -298,6 +268,5 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

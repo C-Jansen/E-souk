@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once '../config/init.php';
-$db = Database::getInstance();
+
 $error = '';
 
 if(isset($_POST['login'])) {
@@ -141,8 +141,10 @@ if(isset($_POST['login'])) {
                         </form>
                         
                         <div class="back-link">
-                            <a href="../index.php" class="text-decoration-none">
-                                <i class="fas fa-arrow-left me-1"></i> Return to main site
+                            <a href="../public/pages/index.php" 
+                               target="_blank"
+                            class="text-decoration-none text-muted">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Home
                             </a>
                         </div>
                     </div>

@@ -9,6 +9,8 @@ if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }
+// Get current page for active menu highlighting
+$current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,70 +22,138 @@ if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/admin.css" />
     <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #1cc88a;
+            --dark-color: #5a5c69;
+            --light-color: #f8f9fc;
+        }
+        
         body {
-            padding-top: 56px;
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8f9fc;
         }
+        
+        /* Improved Header */
+        .navbar {
+            box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15);
+            background: linear-gradient(to right, var(--primary-color), #224abe) !important;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .navbar .dropdown-menu {
+            border: none;
+            box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15);
+        }
+        
+        /* Improved Sidebar */
         .sidebar {
+            box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15);
+            background-color: white;
+            min-height: 100vh;
             position: fixed;
-            top: 56px;
-            bottom: 0;
-            left: 0;
-            z-index: 100;
-            padding: 0;
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-            width: 250px;
+            z-index: 1;
+            padding-top: 70px;
+            transition: all 0.3s;
         }
-        .sidebar-sticky {
-            position: relative;
-            top: 0;
-            height: calc(100vh - 56px);
-            padding-top: 1rem;
-            overflow-x: hidden;
-            overflow-y: auto;
+        
+        .sidebar .nav-link {
+            color: var(--dark-color);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            border-radius: 0.35rem;
+            margin: 0.2rem 0.8rem;
+            transition: all 0.3s;
         }
-        .nav-link {
-            font-weight: 500;
-            color: #333;
+        
+        .sidebar .nav-link:hover {
+            background-color: var(--light-color);
+            color: var(--primary-color);
         }
-        .nav-link.active {
-            color: #007bff;
+        
+        .sidebar .nav-link.active {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .05);
         }
+        
+        .sidebar .nav-link i {
+            color: var(--primary-color);
+            opacity: 0.8;
+            width: 1.5rem;
+            text-align: center;
+        }
+        
+        .sidebar-divider {
+            border-top: 1px solid rgba(0,0,0,.1);
+            margin: 1rem;
+        }
+        
+        .sidebar-heading {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--dark-color);
+            opacity: 0.7;
+            padding: 0.5rem 1.5rem;
+            margin-top: 1rem;
+        }
+        
         .main-content {
-            margin-left: 250px;
-            padding: 20px;
+            margin-top: 70px;
+            padding-top: 1.5rem;
         }
-        @media (max-width: 767.98px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                top: 0;
-            }
-            .main-content {
-                margin-left: 0;
-            }
+
+        /* Admin profile button */
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            color: white !important;
+            font-weight: 600;
+        }
+        
+        .admin-profile .avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <!-- Improved Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.php">E-Souk Admin</a>
+            <a class="navbar-brand" href="index.php">
+                <i class="fas fa-store me-2"></i>E-Souk Admin
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-1"></i><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?>
+                        <a class="nav-link dropdown-toggle admin-profile" href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="../index.php" target="_blank">View Site</a></li>
+                            <li><a class="dropdown-item" href="profile.php"><i class="fas fa-user-cog me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="../index.php" target="_blank"><i class="fas fa-external-link-alt me-2"></i>View Site</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                            <li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -93,33 +163,49 @@ if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
 
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <!-- Improved Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
                 <div class="sidebar-sticky">
+                    <div class="sidebar-heading">Core</div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.php">
-                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            <a class="nav-link <?php echo $current_page == 'index.php' ? 'active' : ''; ?>" href="index.php">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="sidebar-divider"></div>
+                    <div class="sidebar-heading">Store Management</div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link <?php echo $current_page == 'product.php' ? 'active' : ''; ?>" href="product.php">
+                                <i class="fas fa-box"></i>
+                                Products
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="product.php">
-                                <i class="fas fa-box me-2"></i>Products
+                            <a class="nav-link <?php echo $current_page == 'categories.php' ? 'active' : ''; ?>" href="categories.php">
+                                <i class="fas fa-tags"></i>
+                                Categories
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="categories.php">
-                                <i class="fas fa-tags me-2"></i>Categories
+                            <a class="nav-link <?php echo $current_page == 'orders.php' ? 'active' : ''; ?>" href="orders.php">
+                                <i class="fas fa-shopping-cart"></i>
+                                Orders
                             </a>
                         </li>
+                    </ul>
+                    
+                    <div class="sidebar-divider"></div>
+                    <div class="sidebar-heading">Users</div>
+                    <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="orders.php">
-                                <i class="fas fa-shopping-cart me-2"></i>Orders
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="users.php">
-                                <i class="fas fa-users me-2"></i>Users
+                            <a class="nav-link <?php echo $current_page == 'users.php' ? 'active' : ''; ?>" href="users.php">
+                                <i class="fas fa-users"></i>
+                                Users
                             </a>
                         </li>
                     </ul>

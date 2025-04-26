@@ -4,8 +4,6 @@ session_start();
 // Database connection
 require_once __DIR__ . '/../../config/init.php';
 
-$db = Database::getInstance();
-
 $page_title = "Catégories - E-Souk Tounsi";
 $page_description = "Découvrez toutes nos catégories d'artisanat tunisien";
 
@@ -27,8 +25,9 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../assets/css/categories.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/category-details.css">
+    
     
     
 </head>
@@ -69,24 +68,15 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="col-md-6 mb-4 mb-md-0">
                 <div class="category-card">
                     <?php if (!empty($category['image'])): ?>
-                        <img src="../uploads/categories/<?= htmlspecialchars($category['image']) ?>" alt="<?= htmlspecialchars($category['name']) ?>" class="category-image">
+                        <img src="../../root_uploads/categories/<?= htmlspecialchars($category['image']) ?>" alt="<?= htmlspecialchars($category['name']) ?>">
                     <?php else: ?>
-                        <img src="../assets/images/category-placeholder.jpg" alt="<?= htmlspecialchars($category['name']) ?>" class="category-image">
                     <?php endif; ?>
-                    <div class="category-overlay">
-                        <h3 class="category-title"><?= htmlspecialchars($category['name']) ?></h3>
-                        <p class="category-desc">Découvrez nos <?= strtolower(htmlspecialchars($category['name'])) ?> traditionnels tunisiens</p>
-                        <a href="category.php?id=<?= $category['id_category'] ?>" class="category-btn">Découvrir</a>
-                    </div>
+                  
                 </div>
             </div>
             <div class="col-md-5 offset-md-1">
                 <h2 class="mb-3"><?= htmlspecialchars($category['name']) ?></h2>
                 <hr class="w-25" style="border: 2px solid #fcd34d">
-                <p class="lead">
-                    L'artisanat tunisien est renommé pour ses <?= strtolower(htmlspecialchars($category['name'])) ?> 
-                    authentiques créés à la main par des artisans qui perpétuent des techniques ancestrales.
-                </p>
                 <a href="category.php?id=<?= $category['id_category'] ?>" class="btn btn-outline-primary mt-3">
                     Explorer <i class="fas fa-arrow-right ms-2"></i>
                 </a>
@@ -96,10 +86,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="col-md-5">
                 <h2 class="mb-3"><?= htmlspecialchars($category['name']) ?></h2>
                 <hr class="w-25" style="border: 2px solid #fcd34d">
-                <p class="lead">
-                    Chaque <?= strtolower(htmlspecialchars($category['name'])) ?> raconte une histoire unique 
-                    issue du riche patrimoine culturel tunisien et témoigne d'un savoir-faire exceptionnel.
-                </p>
+                
                 <a href="category.php?id=<?= $category['id_category'] ?>" class="btn btn-outline-primary mt-3">
                     Explorer <i class="fas fa-arrow-right ms-2"></i>
                 </a>
@@ -107,15 +94,9 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="col-md-6 offset-md-1">
                 <div class="category-card">
                     <?php if (!empty($category['image'])): ?>
-                        <img src="../uploads/categories/<?= htmlspecialchars($category['image']) ?>" alt="<?= htmlspecialchars($category['name']) ?>" class="category-image">
-                    <?php else: ?>
-                        <img src="../assets/images/category-placeholder.jpg" alt="<?= htmlspecialchars($category['name']) ?>" class="category-image">
+                        <img src="../../root_uploads/categories/<?= htmlspecialchars($category['image']) ?>" alt="<?= htmlspecialchars($category['name']) ?>">
                     <?php endif; ?>
-                    <div class="category-overlay">
-                        <h3 class="category-title"><?= htmlspecialchars($category['name']) ?></h3>
-                        <p class="category-desc">Découvrez nos <?= strtolower(htmlspecialchars($category['name'])) ?> artisanaux faits à la main</p>
-                        <a href="category.php?id=<?= $category['id_category'] ?>" class="category-btn">Découvrir</a>
-                    </div>
+                    
                 </div>
             </div>
             <?php endif; ?>

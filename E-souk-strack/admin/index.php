@@ -53,14 +53,11 @@ $recentOrders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>E-Souk Tableau de Bord Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    
-    <link rel="stylesheet" href="../assets/css/admin.css">
+    <?php include('includes/header.php'); ?>
+    <link rel="stylesheet" href="./css/admin.css">
 </head>
 <body>
-    <?php include('includes/header.php'); ?>
     
-   
-
             <div class="col-md-9 col-lg-10 p-4">
                 <h1 class="mb-4">Tableau de Bord Admin</h1>
                 

@@ -1,8 +1,5 @@
 <?php
 require_once __DIR__ . '/../../config/init.php';
-require_once ROOT_PATH . '/core/connection.php';
-
-$db = Database::getInstance();
 
 // Initialize filter variables
 $categoryFilter = isset($_GET['category']) ? $_GET['category'] : null;
@@ -55,12 +52,44 @@ $stmt->bindParam(':price_min', $priceMin, PDO::PARAM_INT);
 $stmt->bindParam(':price_max', $priceMax, PDO::PARAM_INT);
 $stmt->execute();
 $filtered_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$page_title = "Tous les produits artisanaux";
+$page_description = "Découvrez notre sélection de produits artisanaux uniques et faits main. Parcourez nos catégories et trouvez le produit parfait pour vous ou un proche.";
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <?php include "../templates/header.php"; ?>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js"></script>
+    <style>
+.noUi-connect {
+    background: var(--bs-primary);
+}
+.noUi-handle {
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--bs-primary);
+    box-shadow: none;
+    cursor: pointer;
+}
+.noUi-handle:focus {
+    outline: none;
+}
+.noUi-horizontal {
+    height: 8px;
+}
+.noUi-horizontal .noUi-handle {
+    width: 18px;
+    height: 18px;
+    top: -5px;
+    right: -9px;
+}
+/* Remove the default handle styling */
+.noUi-handle:before, .noUi-handle:after {
+    display: none;
+}
+</style>
 </head>
 <body>
     <?php include "../templates/navbar.php"; ?>
@@ -83,42 +112,54 @@ $filtered_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="col-lg-3 mb-4">
                 <div class="filter-section">
                     <h5 class="mb-4">Filtrer les produits</h5>
-
-                   <!-- Categories Filter -->
-                    <div class="mb-4">
-                        <h6>Catégories</h6>
-                        <?php foreach ($categories as $category): ?>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" 
-                                name="category[]" 
-                                id="cat_<?php echo $category['id_category']; ?>" 
-                                value="<?php echo $category['id_category']; ?>"
-                                <?php echo ($categoryFilter == $category['id_category']) ? 'checked' : ''; ?> />
-                            <label class="form-check-label" for="cat_<?php echo $category['id_category']; ?>">
-                                <?php echo htmlspecialchars($category['name']); ?>
-                            </label>
+                    
+                    <form id="filterForm" method="GET" action="">
+                        <!-- Categories Filter -->
+                        <div class="mb-4">
+                            <h6>Catégories</h6>
+                            <?php foreach ($categories as $category): ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" 
+                                    name="category" 
+                                    id="cat_<?php echo $category['id_category']; ?>" 
+                                    value="<?php echo $category['id_category']; ?>"
+                                    <?php echo ($categoryFilter == $category['id_category']) ? 'checked' : ''; ?> />
+                                <label class="form-check-label" for="cat_<?php echo $category['id_category']; ?>">
+                                    <?php echo htmlspecialchars($category['name']); ?>
+                                </label>
+                            </div>
+                            <?php endforeach; ?>
+                            <!-- Add option to show all categories -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" 
+                                    name="category" 
+                                    id="cat_all" 
+                                    value=""
+                                    <?php echo ($categoryFilter === null) ? 'checked' : ''; ?> />
+                                <label class="form-check-label" for="cat_all">
+                                    Toutes les catégories
+                                </label>
+                            </div>
                         </div>
-                        <?php endforeach; ?>
-                    </div>
 
-                    <!-- Price Filter -->
-                    <div class="mb-4">
-                        <h6>Prix</h6>
-                        <div class="d-flex justify-content-between">
-                            <span>0 DT</span>
-                            <span id="priceValue"><?php echo $priceMax; ?> DT</span>
+                        <!-- Price Filter with Range Slider -->
+                        <div class="mb-4">
+                            <h6>Prix</h6>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span id="priceMinValue"><?php echo $priceMin; ?> DT</span>
+                                <span id="priceMaxValue"><?php echo $priceMax; ?> DT</span>
+                            </div>
+                            <div id="priceRangeSlider" class="mt-2"></div>
+                            <!-- Hidden inputs to store the values -->
+                            <input type="hidden" id="priceMinRange" name="price_min" value="<?php echo $priceMin; ?>">
+                            <input type="hidden" id="priceMaxRange" name="price_max" value="<?php echo $priceMax; ?>">
                         </div>
-                        <input type="range" 
-                               class="form-range" 
-                               min="0" 
-                               max="500" 
-                               step="10" 
-                               id="priceRange" 
-                               name="price_max" 
-                               value="<?php echo $priceMax; ?>">
-                    </div>
-
-                    <button class="btn btn-primary w-100">Appliquer les filtres</button>
+                        
+                        <!-- Sort option (hidden field updated by dropdown) -->
+                        <input type="hidden" name="sort" id="sortInput" value="<?php echo $sort; ?>">
+                        
+                        <button type="submit" class="btn btn-primary w-100">Appliquer les filtres</button>
+                    </form>
                 </div>
             </div>
 
@@ -130,15 +171,14 @@ $filtered_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     <div class="dropdown">
                         <button class="btn btn-outline-dark dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown">
-                            Trier par: Pertinence
+                            Trier par: <?php echo getSortLabel($sort); ?>
                         </button>
                         
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Pertinence</a></li>
-                            <li><a class="dropdown-item" href="#">Prix croissant</a></li>
-                            <li><a class="dropdown-item" href="#">Prix décroissant</a></li>
-                            <li><a class="dropdown-item" href="#">Plus récents</a></li>
-                            <li><a class="dropdown-item" href="#">Meilleures notes</a></li>
+                            <li><a class="dropdown-item sort-option" data-sort="default" href="#">Pertinence</a></li>
+                            <li><a class="dropdown-item sort-option" data-sort="price_asc" href="#">Prix croissant</a></li>
+                            <li><a class="dropdown-item sort-option" data-sort="price_desc" href="#">Prix décroissant</a></li>
+                            <li><a class="dropdown-item sort-option" data-sort="newest" href="#">Plus récents</a></li>
                         </ul>
                     </div>
                 </div>
@@ -153,7 +193,7 @@ $filtered_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <span class="badge bg-danger">Best Seller</span>
                 <?php endif; ?>
                 <a href="product-detail.php?id=<?php echo $product['id_product']; ?>">
-                    <img src="../uploads/products/<?php echo htmlspecialchars($product['image']); ?>" 
+                    <img src="../../root_uploads/products/<?php echo htmlspecialchars($product['image']); ?>" 
                          class="card-img-top" 
                          alt="<?php echo htmlspecialchars($product['title']); ?>" />
                 </a>
@@ -210,24 +250,108 @@ $filtered_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
    
     <script>
-    function addToCart(productId) {
-        // AJAX request to add item to cart
-        console.log('Adding product ID ' + productId + ' to cart');
-        // Implement AJAX call here
+// For price range slider
+document.addEventListener('DOMContentLoaded', function() {
+    // Price range slider
+    const priceSlider = document.getElementById('priceRangeSlider');
+    const priceMinValue = document.getElementById('priceMinValue');
+    const priceMaxValue = document.getElementById('priceMaxValue');
+    const priceMinInput = document.getElementById('priceMinRange');
+    const priceMaxInput = document.getElementById('priceMaxRange');
+    
+    if (priceSlider) {
+        noUiSlider.create(priceSlider, {
+            start: [<?php echo $priceMin; ?>, <?php echo $priceMax; ?>],
+            connect: true,
+            step: 10,
+            range: {
+                'min': 0,
+                'max': 500
+            },
+            format: {
+                to: function (value) {
+                    return Math.round(value);
+                },
+                from: function (value) {
+                    return Math.round(value);
+                }
+            }
+        });
+        
+        // Update values when slider is moved
+        priceSlider.noUiSlider.on('update', function (values, handle) {
+            const value = values[handle];
+            if (handle === 0) {
+                priceMinValue.textContent = value + ' DT';
+                priceMinInput.value = value;
+            } else {
+                priceMaxValue.textContent = value + ' DT';
+                priceMaxInput.value = value;
+            }
+        });
     }
-
-    // Price range slider functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const priceRange = document.getElementById('priceRange');
-        const priceValue = document.getElementById('priceValue');
-
-        // Update price display when slider moves
-        priceRange.addEventListener('input', function() {
-            priceValue.textContent = this.value + ' DT';
+    
+    // The rest of your existing code for sort options...
+    const sortOptions = document.querySelectorAll('.sort-option');
+    const sortInput = document.getElementById('sortInput');
+    
+    sortOptions.forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const sortValue = this.getAttribute('data-sort');
+            sortInput.value = sortValue;
+            document.getElementById('filterForm').submit();
         });
     });
-    </script>
+});
+
+// Global function for add to cart
+function addToCart(productId) {
+    // AJAX request to add item to cart
+    fetch('add_to_cart.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: `product_id=${productId}&quantity=1`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Produit ajouté au panier');
+            // Update cart count if needed
+            if (data.cart_count) {
+                const cartBadge = document.querySelector('.cart-count');
+                if (cartBadge) cartBadge.textContent = data.cart_count;
+            }
+        } else {
+            alert(data.message || 'Erreur lors de l\'ajout au panier');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Une erreur s\'est produite');
+    });
+}
+</script>
 
     
 </body>
 </html>
+
+<?php
+// Helper function to get sort label
+function getSortLabel($sort) {
+    switch ($sort) {
+        case 'price_asc':
+            return 'Prix croissant';
+        case 'price_desc':
+            return 'Prix décroissant';
+        case 'newest':
+            return 'Plus récents';
+        default:
+            return 'Pertinence';
+    }
+}
+?>

@@ -1,7 +1,6 @@
 <?php
 
 require_once '../config/init.php';
-$db = Database::getInstance();
 
 // Initialize variables
 $edit_mode = false;
@@ -32,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Handle image upload
                 $image_filename = '';
                 if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-                    $upload_dir = '../uploads/products/';
+                    $upload_dir = '../root_uploads/products/';
                     
                     // Create directory if it doesn't exist
                     if (!file_exists($upload_dir)) {
@@ -54,12 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $db->prepare("INSERT INTO product (title, description, price, image, stock, category_id, is_best_seller, created_at) 
                                           VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
                     
-                    $stmt->execute([$title, $description, $price, $image_filename, $stock, $category_id, $is_best_seller]);
-                    
-                    $success_msg = "Product added successfully!";
-                    // Reset form
-                    $title = $description = $price = $stock = $category_id = '';
-                    $is_best_seller = 0;
+                    if ($stmt->execute([$title, $description, $price, $image_filename, $stock, $category_id, $is_best_seller])) {
+                        $_SESSION['success_msg'] = "Product added successfully!";
+                        header('Location: product.php');  // Add this line
+                        exit();  // Add this line
+                    }
                 } catch (PDOException $e) {
                     $error_msg = "Error: " . $e->getMessage();
                 }
@@ -81,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $image_sql = "";
                     
                     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-                        $upload_dir = '../uploads/products/';
+                        $upload_dir = '../root_uploads/products/';
                         $image_filename = time() . '_' . basename($_FILES['image']['name']);
                         $target_path = $upload_dir . $image_filename;
                         
@@ -147,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     // Delete image file if exists
                     if (!empty($image_to_delete)) {
-                        $image_path = '../uploads/products/' . $image_to_delete;
+                        $image_path = '../root_uploads/products/' . $image_to_delete;
                         if (file_exists($image_path)) {
                             unlink($image_path);
                         }
@@ -341,7 +339,7 @@ try {
                                     <td><?php echo $product['id_product']; ?></td>
                                     <td>
                                         <?php if (!empty($product['image'])): ?>
-                                            <img src="../uploads/products/<?php echo htmlspecialchars($product['image']); ?>" 
+                                            <img src="../root_uploads/products/<?php echo htmlspecialchars($product['image']); ?>" 
                                                 alt="<?php echo htmlspecialchars($product['title']); ?>" 
                                                 class="img-thumbnail" style="max-height: 50px; max-width: 50px;">
                                         <?php else: ?>
@@ -399,6 +397,5 @@ try {
 </script>
 
 <?php include 'includes/footer.php'; ?>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
 
