@@ -116,6 +116,10 @@
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-3px);
 }
+.category-hero-section {
+  background-size: cover;
+  background-position: center;
+}
 
 /* Key Animations */
 @keyframes fadeInUp {

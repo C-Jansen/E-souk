@@ -97,28 +97,40 @@ function buildPaginationUrl($page) {
 
 $page_title = "Tous les produits artisanaux";
 $page_description = "Découvrez notre sélection de produits artisanaux uniques et faits main.";
+
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <?php include '../templates/header.php'; ?>
-    <?php include "../templates/navbar.php"; ?>
     <link rel="stylesheet" href="../assets/css/product.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js"></script>
+    <?php include "../templates/navbar.php"; ?>
 </head>
 <body>
-    <!-- Breadcrumb -->
-    <div class="container mt-3">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php"><i class="fas fa-home"></i> Accueil</a></li>
-                <li class="breadcrumb-item"><a href="categories.php">Catégories</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tous les produits</li>
-            </ol>
-        </nav>
+    
+<!-- hero with breadcumb section -->
+<section class="category-hero-section">
+    <div class="hero-bg-overlay"></div>
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row align-items-center">
+            <div class="col-lg-8 text-white">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.php">Accueil</a></li> 
+                        <li class="breadcrumb-item"><a href="categories.php">Catégories</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Produits</li>
+                    </ol>
+                </nav>
+                <h1 class="hero-title">Découvrez Nos Produits Artisanaux</h1>
+                <p class="hero-subtitle">Une sélection authentique d'artisanat tunisien fait à la main par nos artisans locaux</p>
+            </div>
+        </div>
     </div>
+</section>
+
 
     <!-- Main Products Section -->
     <section class="container py-5">

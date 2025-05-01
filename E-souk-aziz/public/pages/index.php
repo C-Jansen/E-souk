@@ -141,7 +141,7 @@ $productsArray = $productsQuery->fetchAll(PDO::FETCH_ASSOC);
 
                         <div class="product-image">
                             <a href="product-detail.php?id=<?= $product['id_product'] ?>">
-                                <img src="../uploads/products/<?= htmlspecialchars($product['image']) ?>" 
+                                <img src="../../root_uploads/products/<?= htmlspecialchars($product['image']) ?>" 
                                     alt="<?= htmlspecialchars($product['title']) ?>">
                             </a>
                         </div>

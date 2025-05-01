@@ -23,7 +23,7 @@ require_once __DIR__ . '/../../config/init.php';
           <ul class="navbar-nav me-auto">
             <!-- Categories Dropdown -->
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" >Produits</a>
+              <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" >Categories</a>
               <ul class="dropdown-menu">
                 
               <?php
@@ -57,13 +57,16 @@ require_once __DIR__ . '/../../config/init.php';
     ?>
                 
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="<?php echo ROOT_URL; ?>public/pages/product.php">Tous les produits</a></li>
+                <li><a class="dropdown-item" href="<?php echo ROOT_URL; ?>public/pages/categories.php">Tous les categories</a></li>
               </ul>
             </li>
-
+<li class="nav-item">
+              <a class="nav-link" href="<?php echo ROOT_URL; ?>public/pages/product.php">Produits</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="<?php echo ROOT_URL; ?>public/pages/about.php">À PROPOS</a>
             </li>
+            
             <li class="nav-item">
               <a class="nav-link" href="<?php echo ROOT_URL; ?>public/pages/vision.php">COMING SOON!</a>
             </li>

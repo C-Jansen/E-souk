@@ -39,6 +39,14 @@ if (isset($_POST['add_to_cart'])) {
     $message = '<div class="alert alert-success">Product added to cart successfully!</div>';
     // Here you would add the actual cart adding logic
 }
+$title = htmlspecialchars($product['title']);
+
+$breadcrumbs = [
+    'Accueil' => 'index.php',
+    'Produits' => 'product.php',
+    $product['title'] => '#'
+];
+
 ?>
 
 <!DOCTYPE html>
@@ -46,9 +54,11 @@ if (isset($_POST['add_to_cart'])) {
 <head>
     <?php include '../templates/header.php'; ?>
     <link rel="stylesheet" href="../assets/css/product-detail.css">
+    <link rel="stylesheet" href="../assets/css/components/hero.css">
 </head>
 <body>
     <?php include '../templates/navbar.php'; ?>
+    <?php include '../templates/hero.php'; ?>
 
     <!-- Product Detail Section -->
     <section class="product-detail-section py-5">
@@ -61,7 +71,7 @@ if (isset($_POST['add_to_cart'])) {
                 <!-- Product Image -->
                 <div class="col-md-6 mb-4">
                     <div class="product-image-container">
-                        <img src="../uploads/products/<?= htmlspecialchars($product['image']) ?>" 
+                        <img src="../../root_uploads/products/<?= htmlspecialchars($product['image']) ?>" 
                              alt="...">
                     </div>
                 </div>
@@ -154,10 +164,13 @@ if (isset($_POST['add_to_cart'])) {
                         
                         // If not enough related products, get some best sellers
                         if (count($relatedProducts) < 4) {
+                            $limit = 4 - count($relatedProducts);
                             $bestSellersQuery = $db->prepare("SELECT * FROM product 
                                                             WHERE is_best_seller = 1 AND id_product != ? 
                                                             LIMIT ?");
-                            $bestSellersQuery->execute([$product_id, 4 - count($relatedProducts)]);
+                            $bestSellersQuery->bindParam(1, $product_id, PDO::PARAM_INT);
+                            $bestSellersQuery->bindParam(2, $limit, PDO::PARAM_INT);
+                            $bestSellersQuery->execute();
                             $bestSellers = $bestSellersQuery->fetchAll(PDO::FETCH_ASSOC);
                             $relatedProducts = array_merge($relatedProducts, $bestSellers);
                         }
@@ -169,7 +182,7 @@ if (isset($_POST['add_to_cart'])) {
                                 </div>
                                 <div class="product-image">
                                     <a href="product-detail.php?id=<?= $relatedProduct['id_product'] ?>">
-                                        <img src="../uploads/products/<?= htmlspecialchars($relatedProduct['image']) ?>" alt="...">
+                                        <img src="../../root_uploads/products/<?= htmlspecialchars($relatedProduct['image']) ?>" alt="...">
                                     </a>
                                 </div>
                                 <div class="product-details">

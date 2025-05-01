@@ -14,15 +14,11 @@
                 $menu_items = [
                     // Profile & Account
                     'profile.php' => ['icon' => 'fas fa-user', 'title' => 'Profile Information'],
-                    'edit-profile.php' => ['icon' => 'fas fa-edit', 'title' => 'Edit Profile'],
-                    'change-password.php' => ['icon' => 'fas fa-key', 'title' => 'Change Password'],
-                    
+                    'edit-profile.php' => ['icon' => 'fas fa-edit', 'title' => 'Edit Profile'],                    
                     // Orders & Payments
                     'orders.php' => ['icon' => 'fas fa-shopping-cart', 'title' => 'My Orders'],
-                    'payment-methods.php' => ['icon' => 'fas fa-credit-card', 'title' => 'Payment Methods'],
                     
                     // Notifications & Support
-                    'notifications.php' => ['icon' => 'fas fa-bell', 'title' => 'Notifications'],
                     'support.php' => ['icon' => 'fas fa-question-circle', 'title' => 'Help & Support'],
                     
                     // Always place logout at the bottom
